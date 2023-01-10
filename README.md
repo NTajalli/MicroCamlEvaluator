@@ -10,18 +10,18 @@ Most tokens only exist in one form (for example, the only way for `Tok_Concat` t
 
 - `Tok_Bool of bool`: The value will be set to `true` on the input string "true" and `false` on the input string "false".
   - *Regular Expression*: `true|false`
-- `Tok_Int of int`: Valid ints may be positive or negative and consist of 1 or more digits. **Negative integers must be surrounded by parentheses** (without extra whitespace) to differentiate from subtraction (examples below). You may find the functions `int_of_string` and `String.sub` useful in lexing this token type.
+- `Tok_Int of int`: Valid ints may be positive or negative and consist of 1 or more digits. **Negative integers must be surrounded by parentheses** (without extra whitespace) to differentiate from subtraction (examples below).
   - *Regular Expression*: `[0-9]+` OR `(-[0-9]+)`
   - *Examples of int parenthesization*:
     - `tokenize "x -1" = [Tok_ID "x"; Tok_Sub; Tok_Int 1]`
     - `tokenize "x (-1)" = [Tok_ID "x"; Tok_Int (-1)]`
-- `Tok_String of string`: Valid string will always be surrounded by `""` and **should accept any character except quotes** within them (as well as nothing). You have to "sanitize" the matched string to remove surrounding escaped quotes.
+- `Tok_String of string`: Valid string should always be surrounded by `""`.
   - *Regular Expression*: `\"[^\"]*\"`
   - *Examples*:
     - `tokenize "330" = [Tok_Int 330]`
     - `tokenize "\"330\"" = [Tok_String "330"]`
     - `tokenize "\"\"\"" (* InvalidInputException *)`
-- `Tok_ID of string`: Valid IDs must start with a letter and can be followed by any number of letters or numbers. **Note: Keywords may be substrings of IDs**.
+- `Tok_ID of string`: Valid IDs must start with a letter and can be followed by any number of letters or numbers.
   - *Regular Expression*: `[a-zA-Z][a-zA-Z0-9]*`
   - *Valid examples*:
     - "a"
@@ -121,6 +121,8 @@ This CFG is what defines how MicroCaml code is made sense of. The parser looks f
 This is the last piece! The interpreter uses what the parser spits out to actually put everything together. When you run an expression such as "1 + 1", this is where the computer does the adding after it makes sense of what its supposed to do. The parser says what the interpreter should do, and the interpreter does the operations, such as adding 2 numbers. The whole idea is based on a principle called "operation semantics" to allow the interpreter to make out what the code is building up to.
 
 ### Running Mutop
+
+Note: You need to be under a Unix OS to run this. If you are on Windows, then you must enable WSL (Windows Subsytem for Linux). If you are on Mac, this should work without any other installations, although I am not sure since I am unable to test it myself.
 
 You can run this together in *mutop* (Micro-utop), a version of `utop` for MicroCaml. Run the command `dune exec bin/mutop.exe` in your terminal or use the shell script `bash mutop.sh` to start the mutop toplevel. The toplevel uses your implementations for `parse_mutop` and `eval_mutop` to execute MicroCaml expressions. Here is an example of its use:
 
